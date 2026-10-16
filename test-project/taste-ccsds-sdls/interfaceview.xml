@@ -1,0 +1,49 @@
+<InterfaceView version="1.3" asn1file="taste-ccsds-sdls.acn" UiFile="interfaceview.ui.xml">
+<Function id="{ebbf78a8-f4fd-4a66-bbe6-7b05e4fb5af1}" name="CCSDSSDLSEncryptor" is_type="NO" language="C" default_implementation="default" fixed_system_element="NO" required_system_element="NO" instances_max="1" instances_min="1" startup_priority="1">
+    <Property name="TASTE_IV_Properties::Default_Codegen" value="Ada"/>
+<Provided_Interface id="{2f236c55-4716-41c4-a2c2-2c58b3cd14bb}" name="configure_sa" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="config" type="SDLS-SA-Config" encoding="NATIVE"/>
+    <Output_Parameter name="status" type="SDLS-Status" encoding="NATIVE"/>
+</Provided_Interface>
+
+<Provided_Interface id="{c5aff71b-c259-4a19-9201-dc09712babbb}" name="remove_sa" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="spi" type="SDLS-SPI" encoding="NATIVE"/>
+    <Output_Parameter name="status" type="SDLS-Status" encoding="NATIVE"/>
+</Provided_Interface>
+
+<Provided_Interface id="{10eb76d1-df8a-4776-ab08-661d12d9d7dd}" name="apply_security" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="request" type="SDLS-Apply-Request" encoding="NATIVE"/>
+    <Output_Parameter name="response" type="SDLS-Apply-Response" encoding="NATIVE"/>
+</Provided_Interface>
+
+<Provided_Interface id="{428e5897-1aed-4a3b-b221-cad6f8a405ca}" name="process_security" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="request" type="SDLS-Process-Request" encoding="NATIVE"/>
+    <Output_Parameter name="response" type="SDLS-Process-Response" encoding="NATIVE"/>
+</Provided_Interface>
+
+<Required_Interface id="{8c1f3e52-6b0a-4d7e-9f21-3a5c7b9d1e01}" name="aes256_encrypt_block" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="key" type="AES256-Key" encoding="NATIVE"/>
+    <Input_Parameter name="plaintext" type="AES-Block" encoding="NATIVE"/>
+    <Output_Parameter name="ciphertext" type="AES-Block" encoding="NATIVE"/>
+    <Output_Parameter name="status" type="Crypto-Status" encoding="NATIVE"/>
+    <Property name="Taste::InheritPI" value="true"/>
+    <Property name="Taste::Autonamed" value="false"/>
+</Required_Interface>
+
+<Required_Interface id="{8c1f3e52-6b0a-4d7e-9f21-3a5c7b9d1e02}" name="cmac256" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="key" type="AES256-Key" encoding="NATIVE"/>
+    <Input_Parameter name="message" type="CMAC-Message" encoding="NATIVE"/>
+    <Output_Parameter name="tag" type="CMAC-Tag" encoding="NATIVE"/>
+    <Output_Parameter name="status" type="Crypto-Status" encoding="NATIVE"/>
+    <Property name="Taste::InheritPI" value="true"/>
+    <Property name="Taste::Autonamed" value="false"/>
+</Required_Interface>
+
+    <Implementations>
+        <Implementation name="default" language="C"/>
+    </Implementations>
+</Function>
+
+<Layer name="default" is_visible="true"/>
+
+</InterfaceView>
