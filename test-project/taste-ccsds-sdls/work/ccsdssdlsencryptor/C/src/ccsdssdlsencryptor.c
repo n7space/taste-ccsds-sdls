@@ -10,9 +10,7 @@
 /* Space Data Link Security (SDLS) service.
  *
  * Holds a table of Security Associations (SAs) loaded with configure_sa and
- * applies/verifies them with the sdls library. All provided interfaces are
- * protected, so TASTE serializes them: the SA state (IV counters,
- * anti-replay windows) is never accessed concurrently.
+ * applies/verifies them with the sdls library.
  *
  * The AES-256 block cipher and AES-CMAC-256 are not implemented here: the
  * library's crypto backend forwards them to external functions through the
@@ -342,8 +340,6 @@ void ccsdssdlsencryptor_PI_process_security
    if (st == SDLS_OK) {
       OUT_response->data.nCount = (int)pt_len;
    } else {
-      /* The library may already have written (unverified or replayed)
-       * plaintext into the buffer; do not leak it to the caller. */
       wipe(OUT_response->data.arr, sizeof(OUT_response->data.arr));
    }
 }

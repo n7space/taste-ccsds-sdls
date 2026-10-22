@@ -14,22 +14,9 @@
  * process_security and records the outcome of every test in
  * test_results[] and the counters below.
  *
- * The test logic is target independent (no stdio, no stdlib, no heap; only
- * memcpy/memset/memcmp), so this file can be reused as is in the RTEMS
- * SAMV71/SAMRH71 test project, where the results are read with the
- * debugger once test_finished is set. On Linux only, report() then prints
- * one PASS/FAIL line per test and terminates the process: exit status 0
- * when every check passed, 1 otherwise, so the binary can be used from CI.
- *
  * AES-256 and AES-CMAC-256 are served by the aes256_mock and cmac256_mock
- * functions, which are deterministic stand-ins, not the real algorithms. The
- * tests therefore check behaviour (frame layout, round trips, tamper and
- * replay detection, error statuses), not known-answer vectors.
- * set_aes_status / set_cmac_status make the mocks fail on demand.
+ * functions, which are deterministic stand-ins, not the real algorithms.
  *
- * Stack: the encryptor runs in the run_tests thread (protected calls) and
- * puts its ~2.3 KB authentication payload buffers on the stack; the TASTE
- * stack analysis measured ~16.5 KB for this thread on x86-64.
  */
 #include "test_env.h"
 
@@ -288,8 +275,6 @@ static void test_encryption_only(void)
    CHECK_STATUS(process(&f1, NULL), ok);
    CHECK(got_data(64));
 
-   /* No integrity: a modified ciphertext is accepted and decrypts to
-    * modified plaintext (CCSDS 355.0-B-2 clause 2.3.3). */
    CHECK_STATUS(apply(5, 64, &f2), ok);
    t = f2;
    t.arr[14 + 10] ^= 0x01;
@@ -738,7 +723,6 @@ static void report(void)
    exit(test_failures == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
 }
 #else
-/* No console on the boards: read test_results[] with the debugger. */
 static void report(void)
 {
 }
