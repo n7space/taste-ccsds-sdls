@@ -170,6 +170,12 @@
     <Target iface_id="{9b1be517-b60b-42ed-869d-4990233cc9df}" func_name="aes256_mock" pi_name="set_aes_status" />
 </Connection>
 
+<Comment id="{4b9d8fcf-ef5a-43e5-a865-afc764846976}" name="Mock AES256 implementation, only performs deterministic bit mix. Do not use in real application." required_system_element="NO">
+</Comment>
+
+<Comment id="{126b9668-fe31-4827-b387-b787df22f005}" name="Mock CMAC256 implementation, only performs deterministic bit mix. Do not use in real application." required_system_element="NO">
+</Comment>
+
 <Layer name="default" is_visible="true"/>
 
 </InterfaceView>

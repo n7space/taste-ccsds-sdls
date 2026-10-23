@@ -40,7 +40,11 @@ _Static_assert(sizeof(((asn1SccSDLS_Auth_Mask *)0)->arr) == SDLS_MAX_FRAME_HEADE
 _Static_assert(sizeof(((asn1SccCMAC_Message *)0)->arr) == SDLS_MAX_AUTH_PAYLOAD_SIZE,
                "CMAC-Message size differs from SDLS_MAX_AUTH_PAYLOAD_SIZE");
 
-#define MAX_SAS SDLS_MAX_LOOKUP_ENTRIES
+/* Number of Security Associations that can be configured at the same time;
+ Bounded by the library's SPI lookup table, which indexes every configured SA. */
+#define SA_TABLE_CAPACITY SDLS_MAX_LOOKUP_ENTRIES
+
+/* Longest authentication mask an SA can hold, in octets. */
 #define AUTH_MASK_CAPACITY (SDLS_MAX_FRAME_HEADER_SIZE + SDLS_MAX_SECURITY_HEADER_SIZE)
 
 /* One slot of the SA table. The SA points at its slot's mask storage. */
@@ -50,7 +54,7 @@ typedef struct {
     uint8_t auth_mask[AUTH_MASK_CAPACITY];
 } sa_slot_t;
 
-static sa_slot_t g_slots[MAX_SAS];
+static sa_slot_t g_slots[SA_TABLE_CAPACITY];
 static sdls_static_lookup_t g_lookup;
 
 static asn1SccSDLS_Status to_asn1_status(sdls_status_t st)
@@ -92,7 +96,7 @@ static void wipe(void *p, size_t n)
 
 static sa_slot_t *find_slot(asn1SccUint spi)
 {
-   for (size_t i = 0; i < MAX_SAS; i++) {
+   for (size_t i = 0; i < SA_TABLE_CAPACITY; i++) {
       if (g_slots[i].in_use && g_slots[i].sa.spi == spi) {
          return &g_slots[i];
       }
@@ -103,9 +107,9 @@ static sa_slot_t *find_slot(asn1SccUint spi)
 /* Re-indexes the lookup table over the slots currently in use. */
 static void rebuild_lookup(void)
 {
-   sdls_security_association_t *sas[MAX_SAS];
+   sdls_security_association_t *sas[SA_TABLE_CAPACITY] = { NULL };
    size_t count = 0;
-   for (size_t i = 0; i < MAX_SAS; i++) {
+   for (size_t i = 0; i < SA_TABLE_CAPACITY; i++) {
       if (g_slots[i].in_use) {
          sas[count++] = &g_slots[i].sa;
       }
@@ -128,9 +132,9 @@ static int ri_aes256_encrypt_block(void *user_ctx,
                                    const uint8_t in_block[16],
                                    uint8_t out_block[16])
 {
-   asn1SccAES256_Key k;
-   asn1SccAES_Block plaintext;
-   asn1SccAES_Block ciphertext;
+   asn1SccAES256_Key k = { { 0 } };
+   asn1SccAES_Block plaintext = { { 0 } };
+   asn1SccAES_Block ciphertext = { { 0 } };
    asn1SccCrypto_Status status = Crypto_Status_failed;
    (void)user_ctx;
 
@@ -157,8 +161,8 @@ static int ri_cmac256(void *user_ctx,
    /* Static: too large for the caller's stack, and the provided interfaces
     * that end up here are serialized. */
    static asn1SccCMAC_Message message;
-   asn1SccAES256_Key k;
-   asn1SccCMAC_Tag tag;
+   asn1SccAES256_Key k = { { 0 } };
+   asn1SccCMAC_Tag tag = { { 0 } };
    asn1SccCrypto_Status status = Crypto_Status_failed;
    (void)user_ctx;
 
@@ -206,7 +210,7 @@ void ccsdssdlsencryptor_PI_configure_sa
    }
 
    sa_slot_t *slot = NULL;
-   for (size_t i = 0; i < MAX_SAS; i++) {
+   for (size_t i = 0; i < SA_TABLE_CAPACITY; i++) {
       if (!g_slots[i].in_use) {
          slot = &g_slots[i];
          break;
@@ -320,7 +324,7 @@ void ccsdssdlsencryptor_PI_process_security
                        ? (asn1SccUint)(((unsigned)in->arr[0] << 8) | in->arr[1])
                        : 0;
 
-   sdls_channel_id_t ch;
+   sdls_channel_id_t ch = { .tfvn = 0, .scid = 0, .vcid = 0, .map_id = SDLS_NO_MAP };
    if (IN_request->exist.rx_channel) {
       to_channel_id(&IN_request->rx_channel, &ch);
    }
