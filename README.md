@@ -1,1 +1,4 @@
 # taste-ccsds-sdls
+TASTE CCSDS SDLS component based on Astro Go library (https://github.com/ravisuhag/astro), developed as a part of "Model-Based Execution Platform for Space Applications" project (contract 4000146882/24/NL/KK) financed by the European Space Agency.
+
+This repository contains a TASTE component that wraps the Astro library CCSDS SDLS C port (https://github.com/ravisuhag/astro/tree/main/pkg/sdls). The Astro library SDLS C port has been modified to implement encryption (base library only implemented authentication and authenticated encryption). There are provided two test projects for Linux, SAMV71 and SAMRH71 targets. The component is ready for (re)use within ESA's [TASTE MBSE Toolchain](https://taste.tools/). The component needs an user provided bridge between the component and the rest of TASTE system to properly handle ASN.1 data types.
