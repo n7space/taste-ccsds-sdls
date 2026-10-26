@@ -1,0 +1,181 @@
+<InterfaceView version="1.3" asn1file="taste-ccsds-sdls.acn" UiFile="interfaceview.ui.xml" modifierHash="4e9990cbc">
+<Function id="{c10f87e6-2ec6-4659-85b5-579da626e994}" name="test_env" is_type="NO" language="C" default_implementation="default" fixed_system_element="NO" required_system_element="NO" instances_max="1" instances_min="1" startup_priority="1">
+    <Property name="TASTE_IV_Properties::Default_Codegen" value="Ada"/>
+<Provided_Interface id="{71d01502-3244-4b1d-b2d1-c65a33b1cc10}" name="run_tests" kind="Cyclic" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" dispatch_offset="0" period="1000" priority="1" stack_size="32768" wcet="0">
+</Provided_Interface>
+
+<Required_Interface id="{6321a100-f942-4d78-b55e-2fc828eb40a7}" name="configure_sa" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="config" type="SDLS-SA-Config" encoding="NATIVE"/>
+    <Output_Parameter name="status" type="SDLS-Status" encoding="NATIVE"/>
+    <Property name="Taste::InheritPI" value="true"/>
+    <Property name="Taste::Autonamed" value="true"/>
+</Required_Interface>
+
+<Required_Interface id="{8bb43ff9-25e0-4a8b-ae27-6d3ffc649b0b}" name="remove_sa" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="spi" type="SDLS-SPI" encoding="NATIVE"/>
+    <Output_Parameter name="status" type="SDLS-Status" encoding="NATIVE"/>
+    <Property name="Taste::InheritPI" value="true"/>
+    <Property name="Taste::Autonamed" value="true"/>
+</Required_Interface>
+
+<Required_Interface id="{bc48a9b8-564d-4610-949e-26d12c826896}" name="apply_security" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="request" type="SDLS-Apply-Request" encoding="NATIVE"/>
+    <Output_Parameter name="response" type="SDLS-Apply-Response" encoding="NATIVE"/>
+    <Property name="Taste::InheritPI" value="true"/>
+    <Property name="Taste::Autonamed" value="true"/>
+</Required_Interface>
+
+<Required_Interface id="{87caaab9-815c-426b-8c66-0771cca8884f}" name="process_security" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="request" type="SDLS-Process-Request" encoding="NATIVE"/>
+    <Output_Parameter name="response" type="SDLS-Process-Response" encoding="NATIVE"/>
+    <Property name="Taste::InheritPI" value="true"/>
+    <Property name="Taste::Autonamed" value="true"/>
+</Required_Interface>
+
+<Required_Interface id="{e80bf03c-ef33-4389-9dc4-e0eadfad28b2}" name="set_aes_status" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="status" type="Crypto-Status" encoding="NATIVE"/>
+    <Property name="Taste::InheritPI" value="true"/>
+    <Property name="Taste::Autonamed" value="true"/>
+</Required_Interface>
+
+<Required_Interface id="{b119deeb-d3c4-433e-94c6-6f29c6cf7b5b}" name="set_cmac_status" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="status" type="Crypto-Status" encoding="NATIVE"/>
+    <Property name="Taste::InheritPI" value="true"/>
+    <Property name="Taste::Autonamed" value="true"/>
+</Required_Interface>
+
+    <Implementations>
+        <Implementation name="default" language="C"/>
+    </Implementations>
+</Function>
+
+<Function id="{ebbf78a8-f4fd-4a66-bbe6-7b05e4fb5af1}" name="CCSDSSDLSEncryptor" is_type="NO" language="C" default_implementation="default" fixed_system_element="NO" required_system_element="NO" instances_max="1" instances_min="1" startup_priority="1">
+    <Property name="TASTE_IV_Properties::Default_Codegen" value="Ada"/>
+<Provided_Interface id="{2f236c55-4716-41c4-a2c2-2c58b3cd14bb}" name="configure_sa" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="config" type="SDLS-SA-Config" encoding="NATIVE"/>
+    <Output_Parameter name="status" type="SDLS-Status" encoding="NATIVE"/>
+</Provided_Interface>
+
+<Provided_Interface id="{c5aff71b-c259-4a19-9201-dc09712babbb}" name="remove_sa" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="spi" type="SDLS-SPI" encoding="NATIVE"/>
+    <Output_Parameter name="status" type="SDLS-Status" encoding="NATIVE"/>
+</Provided_Interface>
+
+<Provided_Interface id="{10eb76d1-df8a-4776-ab08-661d12d9d7dd}" name="apply_security" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="request" type="SDLS-Apply-Request" encoding="NATIVE"/>
+    <Output_Parameter name="response" type="SDLS-Apply-Response" encoding="NATIVE"/>
+</Provided_Interface>
+
+<Provided_Interface id="{428e5897-1aed-4a3b-b221-cad6f8a405ca}" name="process_security" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="request" type="SDLS-Process-Request" encoding="NATIVE"/>
+    <Output_Parameter name="response" type="SDLS-Process-Response" encoding="NATIVE"/>
+</Provided_Interface>
+
+<Required_Interface id="{8c1f3e52-6b0a-4d7e-9f21-3a5c7b9d1e01}" name="aes256_encrypt_block" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="key" type="AES256-Key" encoding="NATIVE"/>
+    <Input_Parameter name="plaintext" type="AES-Block" encoding="NATIVE"/>
+    <Output_Parameter name="ciphertext" type="AES-Block" encoding="NATIVE"/>
+    <Output_Parameter name="status" type="Crypto-Status" encoding="NATIVE"/>
+    <Property name="Taste::InheritPI" value="true"/>
+    <Property name="Taste::Autonamed" value="false"/>
+</Required_Interface>
+
+<Required_Interface id="{8c1f3e52-6b0a-4d7e-9f21-3a5c7b9d1e02}" name="cmac256" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="key" type="AES256-Key" encoding="NATIVE"/>
+    <Input_Parameter name="message" type="CMAC-Message" encoding="NATIVE"/>
+    <Output_Parameter name="tag" type="CMAC-Tag" encoding="NATIVE"/>
+    <Output_Parameter name="status" type="Crypto-Status" encoding="NATIVE"/>
+    <Property name="Taste::InheritPI" value="true"/>
+    <Property name="Taste::Autonamed" value="false"/>
+</Required_Interface>
+
+    <Implementations>
+        <Implementation name="default" language="C"/>
+    </Implementations>
+</Function>
+
+<Function id="{a9b752c8-9a14-443a-b179-9e79dc94aa43}" name="aes256_mock" is_type="NO" language="C" default_implementation="default" fixed_system_element="NO" required_system_element="NO" instances_max="1" instances_min="1" startup_priority="1">
+    <Property name="TASTE_IV_Properties::Default_Codegen" value="Ada"/>
+<Provided_Interface id="{ed4c4238-94c0-43e4-a4db-23b3e2a3b604}" name="aes256_encrypt_block" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="key" type="AES256-Key" encoding="NATIVE"/>
+    <Input_Parameter name="plaintext" type="AES-Block" encoding="NATIVE"/>
+    <Output_Parameter name="ciphertext" type="AES-Block" encoding="NATIVE"/>
+    <Output_Parameter name="status" type="Crypto-Status" encoding="NATIVE"/>
+</Provided_Interface>
+
+<Provided_Interface id="{9b1be517-b60b-42ed-869d-4990233cc9df}" name="set_aes_status" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="status" type="Crypto-Status" encoding="NATIVE"/>
+</Provided_Interface>
+
+    <Implementations>
+        <Implementation name="default" language="C"/>
+    </Implementations>
+</Function>
+
+<Function id="{8d94745d-8a48-49ea-8f8e-fc6e409818a7}" name="cmac256_mock" is_type="NO" language="C" default_implementation="default" fixed_system_element="NO" required_system_element="NO" instances_max="1" instances_min="1" startup_priority="1">
+    <Property name="TASTE_IV_Properties::Default_Codegen" value="Ada"/>
+<Provided_Interface id="{d9e8c999-078e-47ec-9669-7598f0c84c12}" name="cmac256" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="key" type="AES256-Key" encoding="NATIVE"/>
+    <Input_Parameter name="message" type="CMAC-Message" encoding="NATIVE"/>
+    <Output_Parameter name="tag" type="CMAC-Tag" encoding="NATIVE"/>
+    <Output_Parameter name="status" type="Crypto-Status" encoding="NATIVE"/>
+</Provided_Interface>
+
+<Provided_Interface id="{4e4a7a60-5680-4bf2-9212-69b639e63857}" name="set_cmac_status" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="status" type="Crypto-Status" encoding="NATIVE"/>
+</Provided_Interface>
+
+    <Implementations>
+        <Implementation name="default" language="C"/>
+    </Implementations>
+</Function>
+
+<Connection id="{b6b03b3f-4fe0-4644-aaab-9847d387dd32}" name="CCSDSSDLSEncryptor_cmac256____cmac256_mock_cmac256" required_system_element="NO">
+    <Source iface_id="{8c1f3e52-6b0a-4d7e-9f21-3a5c7b9d1e02}" func_name="CCSDSSDLSEncryptor" ri_name="cmac256" />
+    <Target iface_id="{d9e8c999-078e-47ec-9669-7598f0c84c12}" func_name="cmac256_mock" pi_name="cmac256" />
+</Connection>
+
+<Connection id="{2e0d6b90-920d-4579-b8a1-8543a0918660}" name="test_env_remove_sa____CCSDSSDLSEncryptor_remove_sa" required_system_element="NO">
+    <Source iface_id="{8bb43ff9-25e0-4a8b-ae27-6d3ffc649b0b}" func_name="test_env" ri_name="remove_sa" />
+    <Target iface_id="{c5aff71b-c259-4a19-9201-dc09712babbb}" func_name="CCSDSSDLSEncryptor" pi_name="remove_sa" />
+</Connection>
+
+<Connection id="{1779b7cd-4e71-489c-af09-271e3971b295}" name="test_env_apply_security____CCSDSSDLSEncryptor_apply_security" required_system_element="NO">
+    <Source iface_id="{bc48a9b8-564d-4610-949e-26d12c826896}" func_name="test_env" ri_name="apply_security" />
+    <Target iface_id="{10eb76d1-df8a-4776-ab08-661d12d9d7dd}" func_name="CCSDSSDLSEncryptor" pi_name="apply_security" />
+</Connection>
+
+<Connection id="{4cedf4bc-87b4-4ce6-bac3-19f0426081c9}" name="CCSDSSDLSEncryptor_aes256_encrypt_block____aes256_mock_aes256_encrypt_block" required_system_element="NO">
+    <Source iface_id="{8c1f3e52-6b0a-4d7e-9f21-3a5c7b9d1e01}" func_name="CCSDSSDLSEncryptor" ri_name="aes256_encrypt_block" />
+    <Target iface_id="{ed4c4238-94c0-43e4-a4db-23b3e2a3b604}" func_name="aes256_mock" pi_name="aes256_encrypt_block" />
+</Connection>
+
+<Connection id="{1fc4e986-f97a-493b-893d-1e118fb38c77}" name="test_env_set_cmac_status____cmac256_mock_set_cmac_status" required_system_element="NO">
+    <Source iface_id="{b119deeb-d3c4-433e-94c6-6f29c6cf7b5b}" func_name="test_env" ri_name="set_cmac_status" />
+    <Target iface_id="{4e4a7a60-5680-4bf2-9212-69b639e63857}" func_name="cmac256_mock" pi_name="set_cmac_status" />
+</Connection>
+
+<Connection id="{746e0ab1-65c5-4167-8dab-8afb80c88b94}" name="test_env_configure_sa____CCSDSSDLSEncryptor_configure_sa" required_system_element="NO">
+    <Source iface_id="{6321a100-f942-4d78-b55e-2fc828eb40a7}" func_name="test_env" ri_name="configure_sa" />
+    <Target iface_id="{2f236c55-4716-41c4-a2c2-2c58b3cd14bb}" func_name="CCSDSSDLSEncryptor" pi_name="configure_sa" />
+</Connection>
+
+<Connection id="{33df10a4-2195-4ba5-92de-bef890cd05b7}" name="test_env_set_aes_status____aes256_mock_set_aes_status" required_system_element="NO">
+    <Source iface_id="{e80bf03c-ef33-4389-9dc4-e0eadfad28b2}" func_name="test_env" ri_name="set_aes_status" />
+    <Target iface_id="{9b1be517-b60b-42ed-869d-4990233cc9df}" func_name="aes256_mock" pi_name="set_aes_status" />
+</Connection>
+
+<Connection id="{09d7895c-4df8-4da2-b8a8-7e1a89c0e54f}" name="test_env_process_security____CCSDSSDLSEncryptor_process_security" required_system_element="NO">
+    <Source iface_id="{87caaab9-815c-426b-8c66-0771cca8884f}" func_name="test_env" ri_name="process_security" />
+    <Target iface_id="{428e5897-1aed-4a3b-b221-cad6f8a405ca}" func_name="CCSDSSDLSEncryptor" pi_name="process_security" />
+</Connection>
+
+<Comment id="{0bc72162-4ea2-405b-af2b-c617f887c570}" name="Mock AES256 implementation, only performs deterministic bit mix. Do not use in real application." required_system_element="NO">
+</Comment>
+
+<Comment id="{9e007172-a40f-4bae-b707-ce98f60b6e7f}" name="Mock CMAC256 implementation, only performs deterministic bit mix. Do not use in real application." required_system_element="NO">
+</Comment>
+
+<Layer name="default" is_visible="true"/>
+
+</InterfaceView>

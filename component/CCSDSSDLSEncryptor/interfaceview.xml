@@ -1,0 +1,63 @@
+<InterfaceView version="1.2" componentURL="/home/taste/.local/share/QtProject/QtCreator/components_library/.git_bares/CCSDSSDLSEncryptor_bare">
+<Function id="{dc3a3fcb-f960-4e40-ab20-e05ae5d69e70}" name="CCSDSSDLSEncryptor" is_type="NO" language="C" default_implementation="default" fixed_system_element="NO" required_system_element="NO" instances_max="1" instances_min="1" startup_priority="1">
+    <Property name="TASTE_IV_Properties::Default_Codegen" value="Ada"/>
+<Provided_Interface id="{7234fbc2-108c-4051-a91d-1baa15cb92c1}" name="configure_sa" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="config" type="SDLS-SA-Config" encoding="NATIVE"/>
+    <Output_Parameter name="status" type="SDLS-Status" encoding="NATIVE"/>
+</Provided_Interface>
+
+<Provided_Interface id="{465f99c4-633f-463c-967f-eacd314bb2f5}" name="remove_sa" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="spi" type="SDLS-SPI" encoding="NATIVE"/>
+    <Output_Parameter name="status" type="SDLS-Status" encoding="NATIVE"/>
+</Provided_Interface>
+
+<Provided_Interface id="{ee4abcf1-521e-4519-bcf1-ac3015aeb0e1}" name="apply_security" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="request" type="SDLS-Apply-Request" encoding="NATIVE"/>
+    <Output_Parameter name="response" type="SDLS-Apply-Response" encoding="NATIVE"/>
+</Provided_Interface>
+
+<Provided_Interface id="{bf79bcf1-1cef-43d1-8049-94db978d3a54}" name="process_security" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="request" type="SDLS-Process-Request" encoding="NATIVE"/>
+    <Output_Parameter name="response" type="SDLS-Process-Response" encoding="NATIVE"/>
+</Provided_Interface>
+
+<Required_Interface id="{21c336b2-f3c3-4904-9681-71ba1b2aa04c}" name="aes256_encrypt_block" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="key" type="AES256-Key" encoding="NATIVE"/>
+    <Input_Parameter name="plaintext" type="AES-Block" encoding="NATIVE"/>
+    <Output_Parameter name="ciphertext" type="AES-Block" encoding="NATIVE"/>
+    <Output_Parameter name="status" type="Crypto-Status" encoding="NATIVE"/>
+    <Property name="Taste::InheritPI" value="true"/>
+    <Property name="Taste::Autonamed" value="false"/>
+</Required_Interface>
+
+<Required_Interface id="{a022140c-1e94-45f4-b0ad-6144167f840d}" name="cmac256" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="key" type="AES256-Key" encoding="NATIVE"/>
+    <Input_Parameter name="message" type="CMAC-Message" encoding="NATIVE"/>
+    <Output_Parameter name="tag" type="CMAC-Tag" encoding="NATIVE"/>
+    <Output_Parameter name="status" type="Crypto-Status" encoding="NATIVE"/>
+    <Property name="Taste::InheritPI" value="true"/>
+    <Property name="Taste::Autonamed" value="false"/>
+</Required_Interface>
+
+    <Implementations>
+        <Implementation name="default" language="C"/>
+    </Implementations>
+</Function>
+<UI version="1.0" ><Entity id="{dc3a3fcb-f960-4e40-ab20-e05ae5d69e70}"><Taste coordinates="50000 25000 70000 56000">
+</Taste>
+</Entity><Entity id="{7234fbc2-108c-4051-a91d-1baa15cb92c1}"><Taste coordinates="50000 30000">
+</Taste>
+</Entity><Entity id="{465f99c4-633f-463c-967f-eacd314bb2f5}"><Taste coordinates="50000 36000">
+</Taste>
+</Entity><Entity id="{ee4abcf1-521e-4519-bcf1-ac3015aeb0e1}"><Taste coordinates="50000 42000">
+</Taste>
+</Entity><Entity id="{bf79bcf1-1cef-43d1-8049-94db978d3a54}"><Taste coordinates="50000 48000">
+</Taste>
+</Entity><Entity id="{21c336b2-f3c3-4904-9681-71ba1b2aa04c}"><Taste coordinates="61000 25000">
+</Taste>
+</Entity><Entity id="{a022140c-1e94-45f4-b0ad-6144167f840d}"><Taste coordinates="61000 56000">
+</Taste>
+</Entity>
+</UI>
+
+</InterfaceView>

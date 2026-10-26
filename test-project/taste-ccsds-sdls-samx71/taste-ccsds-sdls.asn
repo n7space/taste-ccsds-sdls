@@ -1,0 +1,183 @@
+TASTE-CCSDS-SDLS-DATAVIEW DEFINITIONS ::=
+BEGIN
+
+-- Data view of the CCSDSSDLSEncryptor function: Space Data Link Security
+-- Protocol (SDLS).
+--
+-- The service applied to a frame (authentication, encryption, authenticated
+-- encryption) is not chosen per call: it is a property of the Security
+-- Association (SA) selected by its Security Parameter Index (SPI). The user
+-- first loads one or more SAs with configure-sa, then protects outgoing
+-- frames with apply-security and verifies incoming frames with
+-- process-security.
+--
+-- Size limits mirror the fixed buffers of the C library (sdls_types.h).
+
+-- Library capacities (keep in sync with sdls_types.h / sdls_sa.h / sdls_process.h)
+sdls-max-frame-header-size     INTEGER ::= 256   -- SDLS_MAX_FRAME_HEADER_SIZE
+sdls-max-data-size             INTEGER ::= 2048  -- SDLS_MAX_DATA_SIZE
+sdls-max-protected-size        INTEGER ::= 2128  -- SDLS_MAX_PROTECTED_SIZE (64 + 2048 + 16)
+sdls-max-auth-mask-size        INTEGER ::= 320   -- frame header + 64-octet security header
+sdls-max-channels              INTEGER ::= 8     -- SDLS_MAX_CHANNELS
+sdls-max-iv-size               INTEGER ::= 16    -- SDLS_MAX_IV_SIZE
+sdls-max-cmac-message-size     INTEGER ::= 2368  -- SDLS_MAX_AUTH_PAYLOAD_SIZE (256 + 64 + 2048)
+
+-- Security Parameter Index. 0 and 65535 are reserved.
+SDLS-SPI ::= INTEGER (1 .. 65534)
+
+-- Service type of a Security Association.
+SDLS-Mode ::= ENUMERATED {
+    authentication,             -- MAC only, data sent in clear (GMAC or CMAC)
+    encryption,                 -- AES-256-CTR (GCM keystream), no MAC
+    authenticated-encryption    -- AES-256-GCM
+}
+
+-- MAC algorithm for mode = authentication (ignored for the other modes).
+SDLS-Auth-Algorithm ::= ENUMERATED {
+    gmac,   -- AES-256-GMAC, requires a 12-octet IV
+    cmac    -- AES-256-CMAC, requires no IV
+}
+
+-- AES-256 key
+SDLS-Key ::= AES256-Key
+
+-- Octet widths of the Security Header / Trailer fields.
+-- A width of zero means the field is absent.
+-- Required widths per service:
+--   authenticated-encryption / gmac: iv 12, mac 12..16
+--   cmac:                            iv 0,  mac 1..16
+--   encryption:                      iv 12, mac 0
+SDLS-Field-Lengths ::= SEQUENCE {
+    iv       INTEGER (0 .. 16),   -- Initialization Vector
+    seq-num  INTEGER (0 .. 8),    -- Sequence Number
+    pad-len  INTEGER (0 .. 4),    -- Pad Length
+    mac      INTEGER (0 .. 16)    -- MAC in the Security Trailer
+}
+
+-- Authentication bit mask, ANDed with
+-- frame header || security header before the MAC is computed.
+-- An empty mask authenticates every octet of the frame header.
+SDLS-Auth-Mask ::= OCTET STRING (SIZE (0 .. sdls-max-auth-mask-size))
+
+-- Global Virtual Channel ID, optionally extended to a Global MAP ID.
+SDLS-Channel-Id ::= SEQUENCE {
+    tfvn    INTEGER (0 .. 15),      -- 0 TM, 1 TC/AOS, 12 USLP
+    scid    INTEGER (0 .. 65535),
+    vcid    INTEGER (0 .. 63),
+    map-id  INTEGER (0 .. 63) OPTIONAL   -- absent: binding stops at the VC
+}
+
+-- Channels an SA is bound to. Empty: no binding.
+SDLS-Channel-List ::= SEQUENCE (SIZE (0 .. sdls-max-channels)) OF SDLS-Channel-Id
+
+-- Value of the sender's IV counter (big endian, field-lengths.iv octets).
+SDLS-IV ::= OCTET STRING (SIZE (0 .. sdls-max-iv-size))
+
+-- Parameters of one Security Association.
+SDLS-SA-Config ::= SEQUENCE {
+    spi             SDLS-SPI,
+    mode            SDLS-Mode,
+    auth-algorithm  SDLS-Auth-Algorithm,
+    key             SDLS-Key,
+    field-lengths   SDLS-Field-Lengths,
+    -- Anti-replay window. 0 disables anti-replay.
+    seq-window      INTEGER (0 .. 4294967295),
+    auth-mask       SDLS-Auth-Mask,
+    channels        SDLS-Channel-List,
+    -- Restores the sender's IV counter (last IV actually sent), e.g. from a
+    -- checkpoint after a reboot, so that no IV is ever reused with the key.
+    -- Absent: the counter restarts and the first frame uses IV = 1.
+    last-sent-iv    SDLS-IV OPTIONAL
+}
+
+-- Result of every operation. The values from data-too-short to
+-- invalid-argument map one-to-one to sdls_status_t (sdls_errors.h).
+SDLS-Status ::= ENUMERATED {
+    ok,
+    data-too-short,
+    invalid-spi,
+    invalid-key,
+    invalid-mode,
+    invalid-field-lengths,
+    header-too-long,
+    unsupported-mode,
+    unknown-spi,
+    authentication-failed,
+    replay-detected,
+    iv-exhausted,
+    sa-channel-mismatch,
+    mask-too-short,
+    invalid-pad-length,
+    invalid-iv-counter,
+    no-anti-replay-counter,
+    buffer-too-small,
+    no-crypto-backend,
+    crypto-backend-failed,
+    invalid-argument,
+    -- Component-level errors (no equivalent in the library)
+    sa-table-full,
+    spi-already-in-use
+}
+
+-- Transfer Frame bytes from the first octet of the Primary Header up to
+-- where the Security Header begins. Authenticated (subject to the mask),
+-- never encrypted.
+SDLS-Frame-Header ::= OCTET STRING (SIZE (0 .. sdls-max-frame-header-size))
+
+-- Transfer Frame Data Field (plaintext).
+SDLS-Frame-Data ::= OCTET STRING (SIZE (0 .. sdls-max-data-size))
+
+-- Security Header || data (ciphertext or plaintext) || Security Trailer:
+-- the bytes placed in the carrier frame after the frame header.
+SDLS-Protected-Data ::= OCTET STRING (SIZE (0 .. sdls-max-protected-size))
+
+-- ApplySecurity
+SDLS-Apply-Request ::= SEQUENCE {
+    spi           SDLS-SPI,
+    frame-header  SDLS-Frame-Header,
+    data          SDLS-Frame-Data
+}
+
+SDLS-Apply-Response ::= SEQUENCE {
+    status          SDLS-Status,
+    protected-data  SDLS-Protected-Data   -- empty unless status = ok
+}
+
+-- ProcessSecurity
+SDLS-Process-Request ::= SEQUENCE {
+    frame-header    SDLS-Frame-Header,
+    protected-data  SDLS-Protected-Data,
+    -- Channel the frame arrived on. When present, the SA named by the SPI
+    -- must be bound to it.
+    rx-channel      SDLS-Channel-Id OPTIONAL
+}
+
+SDLS-Process-Response ::= SEQUENCE {
+    status  SDLS-Status,
+    spi     INTEGER (0 .. 65535),   -- SPI read from the Security Header
+    data    SDLS-Frame-Data         -- empty unless status = ok
+}
+
+-- Interfaces to the external cryptographic functions
+-- (required interfaces aes256_encrypt_block and cmac256)
+
+-- AES-256 key
+AES256-Key ::= OCTET STRING (SIZE (32))
+
+-- One 16-octet AES block
+AES-Block ::= OCTET STRING (SIZE (16))
+
+-- Message authenticated with AES-CMAC-256: masked frame header,
+-- Security Header and frame data field
+CMAC-Message ::= OCTET STRING (SIZE (0 .. sdls-max-cmac-message-size))
+
+-- Full, untruncated AES-CMAC tag
+CMAC-Tag ::= OCTET STRING (SIZE (16))
+
+-- Result of a call to an external cryptographic function
+Crypto-Status ::= ENUMERATED {
+    ok,
+    failed
+}
+
+END
